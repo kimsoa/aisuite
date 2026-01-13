@@ -11,8 +11,13 @@ from .framework.asr_params import ParamValidator
 # Import MCP utilities for config dict support
 try:
     from .mcp.config import is_mcp_config
-    from .mcp.client import MCPClient
+except ImportError:
+    # Fallback implementation if config.py somehow fails to import
+    def is_mcp_config(obj: Any) -> bool:
+        return isinstance(obj, dict) and obj.get("type") == "mcp"
 
+try:
+    from .mcp.client import MCPClient
     MCP_AVAILABLE = True
 except ImportError:
     MCP_AVAILABLE = False
